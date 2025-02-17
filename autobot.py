@@ -19,21 +19,33 @@ logging.basicConfig(
 BASE_URL = "https://qwen7b.gaia.domains"
 MODEL = "Qwen2.5-7B-Instruct-Q5_K_M"
 MAX_RETRIES = 100  
-RETRY_DELAY = 7  
+RETRY_DELAY = 3  
 QUESTION_DELAY = 1  
 WIKI_API_URL = "https://en.wikipedia.org/api/rest_v1/page/random/title"
-NUM_QUESTIONS = 7  # Số câu hỏi chạy cùng lúc
+NUM_QUESTIONS = 3 # Số câu hỏi chạy cùng lúc
 
 
 def get_random_question() -> str:
-    """Lấy tiêu đề bài viết ngẫu nhiên từ Wikipedia và chuyển thành câu hỏi."""
+    """Lấy một đoạn tóm tắt từ Wikipedia và chuyển thành câu hỏi dài hơn."""
     try:
+        # Lấy tiêu đề ngẫu nhiên
         response = requests.get(WIKI_API_URL, timeout=10)
         if response.status_code == 200:
             title = response.json().get("items", [{}])[0].get("title", "Unknown Topic")
-            return f"{title} là gì?"
+
+            # Lấy nội dung tóm tắt từ Wikipedia dựa trên tiêu đề
+            summary_url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{title}"
+            summary_response = requests.get(summary_url, timeout=10)
+
+            if summary_response.status_code == 200:
+                summary = summary_response.json().get("extract", "Không có thông tin.")
+                return f"{title} là gì? {summary} Bạn có thể giải thích chi tiết hơn không?"
+            else:
+                logging.warning(f"Wiki Summary API Error ({summary_response.status_code}): {summary_response.text}")
+
         else:
             logging.warning(f"Wiki API Error ({response.status_code}): {response.text}")
+
     except Exception as e:
         logging.error(f"Failed to fetch question from Wikipedia: {str(e)}")
     
