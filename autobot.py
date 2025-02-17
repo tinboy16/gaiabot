@@ -19,10 +19,10 @@ logging.basicConfig(
 BASE_URL = "https://qwen7b.gaia.domains"
 MODEL = "Qwen2.5-7B-Instruct-Q5_K_M"
 MAX_RETRIES = 100  
-RETRY_DELAY = 20  
+RETRY_DELAY = 5  
 QUESTION_DELAY = 1  
 WIKI_API_URL = "https://en.wikipedia.org/api/rest_v1/page/random/title"
-NUM_QUESTIONS = 20 # Số câu hỏi chạy cùng lúc
+NUM_QUESTIONS = 5 # Số câu hỏi chạy cùng lúc
 
 
 def get_random_question() -> str:
