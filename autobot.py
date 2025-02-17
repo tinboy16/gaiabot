@@ -5,7 +5,7 @@ import logging
 from typing import List
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# Configure logging
+# Cấu hình logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -15,7 +15,7 @@ logging.basicConfig(
     ]
 )
 
-# Configuration
+# Cấu hình
 BASE_URL = "https://qwen7b.gaia.domains"
 MODEL = "Qwen2.5-7B-Instruct-Q5_K_M"
 MAX_RETRIES = 100  
@@ -26,7 +26,7 @@ NUM_QUESTIONS = 5 # Số câu hỏi chạy cùng lúc
 
 
 def get_random_question() -> str:
-    """Lấy một đoạn tóm tắt từ Wikipedia và chuyển thành câu hỏi dài hơn."""
+    """Lấy một đoạn tóm tắt từ Wikipedia và chuyển thành câu hỏi rất chi tiết."""
     try:
         # Lấy tiêu đề ngẫu nhiên
         response = requests.get(WIKI_API_URL, timeout=10)
@@ -39,7 +39,8 @@ def get_random_question() -> str:
 
             if summary_response.status_code == 200:
                 summary = summary_response.json().get("extract", "Không có thông tin.")
-                return f"{title} là gì? {summary} Bạn có thể giải thích chi tiết hơn không?"
+                return f"Chủ đề '{title}' là một khái niệm có tầm ảnh hưởng rộng rãi trong nhiều lĩnh vực khác nhau. Tuy nhiên, để có cái nhìn sâu sắc hơn về chủ đề này, bạn có thể cung cấp cho tôi các thông tin chi tiết sau đây: 1) Lịch sử hình thành và sự phát triển của chủ đề này qua các thời kỳ, đặc biệt là những sự kiện quan trọng đã thúc đẩy sự thay đổi của nó; 2) Các nhân vật lịch sử hay những tổ chức có ảnh hưởng lớn đến sự hình thành và phát triển của chủ đề này; 3) Tác động của chủ đề này đối với xã hội và các lĩnh vực khác như khoa học, nghệ thuật, chính trị, và văn hóa; 4) Những thay đổi đáng chú ý trong cách mà con người tiếp cận hoặc hiểu về chủ đề này theo thời gian, và liệu có sự thay đổi lớn nào trong tư duy hay phương pháp luận không; 5) Các ứng dụng thực tế của chủ đề này trong đời sống hàng ngày hay trong các ngành công nghiệp khác nhau; 6) Tình hình hiện tại và những tranh luận đang diễn ra liên quan đến chủ đề này, liệu có những quan điểm trái chiều nào không? Bạn có thể cung cấp thông tin chi tiết về các vấn đề này và giải thích thêm về những ảnh hưởng mà chủ đề này có thể mang lại cho tương lai không?"
+
             else:
                 logging.warning(f"Wiki Summary API Error ({summary_response.status_code}): {summary_response.text}")
 
@@ -50,7 +51,6 @@ def get_random_question() -> str:
         logging.error(f"Failed to fetch question from Wikipedia: {str(e)}")
     
     return "Câu hỏi ngẫu nhiên không thể tải được."
-
 
 def chat_with_ai(api_key: str, question: str) -> str:
     """Gửi câu hỏi đến AI API và nhận câu trả lời."""
